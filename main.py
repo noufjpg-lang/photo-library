@@ -217,7 +217,13 @@ def do_sync(token: str, folders: list[str]):
             try:
                 # Dropbox API: root must be "" not "/"
                 api_path = "" if folder == "/" else folder
-                res = dbx.files_list_folder(api_path, recursive=True)
+                res = dbx.files_list_folder(
+                    api_path,
+                    recursive=True,
+                    include_media_info=False,
+                    include_deleted=False,
+                    include_has_explicit_shared_members=False
+                )
                 while True:
                     for e in res.entries:
                         if not isinstance(e, FileMetadata): continue
