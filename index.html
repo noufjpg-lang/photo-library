@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكتبة الوسائط</title>
+<style>
+:root{
+  --bg:#f2f2f2;--s1:#ffffff;--s2:#e8e8e8;--s3:#dcdcdc;
+  --bd:#c8c8c8;--bd2:#b0b0b0;
+  --navy:#0a0f2e;--green:#0dc40d;--blue:#1e7eff;
+  --acc:var(--blue);--acch:rgba(30,127,255,.12);
+  --text:var(--navy);--t2:#4a5070;--t3:#8890a8;
+  --r:13px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);
+  font-family:Tahoma,sans-serif;min-height:100vh}
+
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle,#c0c0c0 1px,transparent 1px);
+  background-size:28px 28px;opacity:.4;
+}
+body::after{
+  content:'';position:fixed;top:-300px;right:-200px;
+  width:700px;height:700px;pointer-events:none;z-index:0;
+  background:radial-gradient(circle,rgba(30,127,255,.06) 0%,transparent 65%);
+}
+.wrap{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* ── Header ── */
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px;border-bottom:2px solid var(--navy);
+  background:var(--navy);
+  position:sticky;top:0;z-index:50;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.lm{width:34px;height:34px;border-radius:9px;
+  background:linear-gradient(135deg,var(--green),var(--blue));
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  box-shadow:0 3px 12px rgba(13,196,13,.4)}
+.ln{font-size:16px;font-weight:700;color:#fff}
+.ln b{color:var(--green)}
+
+.hr{display:flex;align-items:center;gap:8px}
+.sw{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.6)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+.dot.spin{background:var(--blue);border-radius:2px;animation:spin .6s linear infinite}
+.dot.err{background:#ff4466}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Buttons ── */
+.pill{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 13px;border-radius:20px;
+  border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);
+  color:rgba(255,255,255,.75);font-size:12px;cursor:pointer;
+  font-family:Tahoma,sans-serif;
+  transition:all .18s;white-space:nowrap;
+}
+.pill:hover{border-color:var(--green);color:var(--green);background:rgba(13,196,13,.12)}
+.pill.on{background:var(--green);border-color:var(--green);color:#fff}
+
+/* ── Stats bar ── */
+.sbar{
+  display:flex;align-items:center;gap:20px;
+  padding:8px 28px;border-bottom:1px solid var(--bd);
+  background:var(--s1);font-size:12px;color:var(--t2);
+  overflow-x:auto;box-shadow:0 2px 6px rgba(0,0,0,.06);
+}
+.ss{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.ss strong{color:var(--navy);font-size:13px;font-weight:700}
+.sd{width:6px;height:6px;border-radius:50%}
+
+/* ── Setup ── */
+.setup{flex:1;display:flex;align-items:center;justify-content:center;padding:40px}
+.setup-card{
+  background:var(--s1);border:1.5px solid var(--bd);
+  border-radius:18px;padding:38px;max-width:460px;width:100%;
+  box-shadow:0 4px 24px rgba(0,0,0,.08);
+}
+.setup-card .ic{font-size:50px;margin-bottom:14px}
+.setup-card h2{font-size:21px;font-weight:700;margin-bottom:8px;color:var(--navy)}
+.setup-card p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:26px}
+.steps{display:flex;flex-direction:column;gap:9px;margin-bottom:26px}
+.step{
+  display:flex;gap:11px;align-items:flex-start;
+  background:var(--s2);border-radius:9px;padding:11px 13px;
+  font-size:13px;color:var(--t2);line-height:1.5;
+}
+.sn{
+  min-width:22px;height:22px;border-radius:50%;
+  background:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#fff;margin-top:1px;flex-shrink:0;
+}
+
+/* ── Main ── */
+.search-area{padding:26px 28px 14px}
+.slabel{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--t3);
+  text-transform:uppercase;margin-bottom:11px}
+.srow{display:flex;gap:8px;max-width:820px}
+.sbox{flex:1;position:relative}
+.sbox svg{position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  color:var(--t3);pointer-events:none}
+#q{
+  width:100%;padding:13px 44px 13px 16px;
+  background:var(--s1);border:1.5px solid var(--bd);border-radius:var(--r);
+  color:var(--navy);font-family:Tahoma,sans-serif;font-size:15px;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+#q:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--acch)}
+#q::placeholder{color:var(--t3)}
+.sbtn{
+  padding:13px 22px;border-radius:var(--r);border:none;
+  background:var(--navy);color:#fff;
+  font-family:Tahoma,sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .18s;white-space:nowrap;
+  box-shadow:0 3px 12px rgba(10,15,46,.2);
+}
+.sbtn:hover{background:var(--blue);transform:translateY(-1px);box-shadow:0 5px 18px rgba(30,127,255,.3)}
+.sbtn:active{transform:none}
+.filters{display:flex;gap:5px;padding-top:11px;flex-wrap:wrap}
+.filters .pill{
+  border:1.5px solid var(--bd);background:var(--s1);
+  color:var(--t2);
+}
+.filters .pill:hover{border-color:var(--navy);color:var(--navy);background:var(--s2)}
+.filters .pill.on{background:var(--navy);border-color:var(--navy);color:#fff}
+
+/* ── Results ── */
+.rarea{flex:1;padding:0 28px 40px}
+.rmeta{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:12px 0 14px;min-height:42px;flex-wrap:wrap;gap:8px;
+}
+.rcount{font-size:13px;color:var(--t2)}
+.rcount strong{color:var(--navy)}
+.trow{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.tchip{
+  padding:2px 9px;border-radius:12px;font-size:11px;
+  background:rgba(30,127,255,.08);border:1px solid rgba(30,127,255,.2);
+  color:var(--blue);font-family:Tahoma,monospace;
+}
+
+/* ── Grid ── */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(188px,1fr));
+  gap:10px;
+}
+.card{
+  background:var(--s1);border:1.5px solid var(--bd);border-radius:var(--r);
+  overflow:hidden;cursor:pointer;
+  transition:transform .18s,border-color .18s,box-shadow .18s;
+  animation:up .28s ease both;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+@keyframes up{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.card:hover{transform:translateY(-3px);border-color:var(--blue);
+  box-shadow:0 8px 24px rgba(30,127,255,.15)}
+.cimg{width:100%;height:146px;object-fit:cover;display:block;background:var(--s2)}
+.cph{
+  width:100%;height:146px;
+  background:linear-gradient(135deg,var(--navy),#1a2560);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+  font-size:30px;color:rgba(255,255,255,.5);
+}
+.vbadge{
+  font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:4px;
+  background:rgba(30,127,255,.2);color:var(--blue);
+  border:1px solid rgba(30,127,255,.3);letter-spacing:.4px;
+}
+.cbody{padding:9px 11px 11px}
+.ctitle{
+  font-size:12px;font-weight:700;color:var(--navy);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;
+}
+.csub{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ext{
+  display:inline-block;padding:1px 6px;border-radius:4px;
+  background:var(--navy);color:#fff;
+  font-size:10px;font-weight:700;text-transform:uppercase;
+}
+.cfolder{font-size:11px;color:var(--t3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+
+/* ── States ── */
+.state{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:80px 20px;gap:12px;color:var(--t2);text-align:center;
+}
+.state-ic{font-size:46px;opacity:.45}
+.state h3{font-size:16px;color:var(--navy);font-weight:700}
+.state p{font-size:13px;max-width:320px;line-height:1.6}
+.spinner{width:22px;height:22px;border:2px solid var(--bd2);
+  border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+
+/* ── Load more ── */
+.lmwrap{text-align:center;margin-top:22px}
+.lmbtn{
+  padding:11px 28px;border-radius:10px;
+  border:1.5px solid var(--bd);background:var(--s1);
+  color:var(--t2);font-family:Tahoma,sans-serif;font-size:13px;
+  cursor:pointer;transition:all .18s;
+}
+.lmbtn:hover{border-color:var(--navy);color:var(--navy)}
+
+/* ── Modal ── */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(10,15,46,.8);backdrop-filter:blur(7px);
+  z-index:100;align-items:center;justify-content:center;padding:20px;
+}
+.overlay.show{display:flex}
+.modal{
+  background:var(--s1);border:1.5px solid var(--bd);
+  border-radius:18px;padding:28px;
+  width:520px;max-width:100%;max-height:92vh;overflow-y:auto;
+  box-shadow:0 24px 80px rgba(10,15,46,.3);
+}
+.mhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.mtitle{font-size:17px;font-weight:700;color:var(--navy)}
+.mx{background:none;border:none;color:var(--t2);font-size:19px;cursor:pointer;
+  padding:3px 7px;border-radius:6px;transition:all .15s;line-height:1}
+.mx:hover{background:var(--s2);color:var(--navy)}
+
+.fg{margin-bottom:16px}
+.fl{display:block;font-size:12px;font-weight:700;color:var(--t2);margin-bottom:6px;letter-spacing:.3px}
+.fi{
+  width:100%;padding:10px 13px;
+  background:var(--bg);border:1.5px solid var(--bd);border-radius:9px;
+  color:var(--navy);font-family:Tahoma,sans-serif;font-size:13px;
+  outline:none;transition:border-color .18s;
+}
+.fi:focus{border-color:var(--blue)}
+.fh{font-size:11px;color:var(--t2);margin-top:5px;line-height:1.55}
+.fh a{color:var(--blue)}
+.fh code{color:var(--green);font-size:10.5px}
+
+.fbox{
+  background:var(--bg);border:1.5px solid var(--bd);border-radius:9px;
+  padding:7px;min-height:50px;display:flex;flex-direction:column;gap:5px;
+}
+.frow{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--s2);border-radius:7px;padding:7px 10px;
+  font-size:12px;color:var(--t2);
+}
+.fdel{background:none;border:none;color:#cc0033;cursor:pointer;
+  font-size:14px;padding:2px 5px;border-radius:4px;transition:background .15s}
+.fdel:hover{background:rgba(204,0,51,.1)}
+.addrow{display:flex;gap:7px;margin-top:7px}
+.addrow .fi{flex:1}
+
+/* ── API URL section ── */
+.api-section{
+  background:var(--bg);border:1.5px solid var(--bd);border-radius:9px;
+  padding:12px 14px;margin-bottom:16px;
+}
+.api-url-display{
+  font-size:12px;color:var(--green);word-break:break-all;margin-top:4px;
+}
+
+.mactions{display:flex;gap:8px;margin-top:18px}
+.bsave{
+  flex:1;padding:12px;border-radius:10px;border:none;
+  background:var(--navy);color:#fff;
+  font-family:Tahoma,sans-serif;font-weight:700;font-size:14px;
+  cursor:pointer;transition:all .18s;
+}
+.bsave:hover{background:var(--blue)}
+.bout{
+  padding:12px 16px;border-radius:10px;
+  border:1.5px solid var(--bd);background:transparent;
+  color:var(--t2);font-family:Tahoma,sans-serif;font-size:13px;
+  cursor:pointer;transition:all .18s;
+}
+.bout:hover{border-color:var(--navy);color:var(--navy)}
+
+.sinfo{
+  margin-top:14px;padding:12px 14px;background:var(--bg);
+  border-radius:9px;font-size:12px;color:var(--t2);line-height:1.9;
+  border:1.5px solid var(--bd);
+}
+
+/* ── Divider ── */
+.div{height:1px;background:var(--bd);margin:16px 0}
+
+/* ── Toast ── */
+.toast{
+  position:fixed;bottom:22px;left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:var(--navy);border:2px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:11px 20px;font-size:13px;color:#fff;
+  box-shadow:0 8px 30px rgba(10,15,46,.3);z-index:200;
+  opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:var(--green)}
+.toast.err{border-color:#ff4466}
+
+@media(max-width:600px){
+  header{padding:12px 16px}
+  .sbar,.search-area,.rarea{padding-right:16px;padding-left:16px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px}
+  .cimg,.cph{height:128px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="logo">
+    <div class="lm">🎨</div>
+    <div class="ln">مكتبة <b>الوسائط</b></div>
+  </div>
+  <div class="hr">
+    <div class="sw"><div class="dot" id="dot"></div><span id="dtxt">جاهز</span></div>
+    <button class="pill" id="syncBtn" onclick="triggerSync()">🔄 مزامنة</button>
+    <button class="pill" onclick="openModal()">⚙️ إعدادات</button>
+  </div>
+</header>
+
+<div class="sbar">
+  <div class="ss"><div class="sd" style="background:var(--blue)"></div>صور: <strong id="si">—</strong></div>
+  <div class="ss"><div class="sd" style="background:var(--green)"></div>فيديوهات: <strong id="sv">—</strong></div>
+  <div class="ss"><div class="sd" style="background:var(--navy)"></div>مجلدات: <strong id="sf">—</strong></div>
+  <div class="ss" id="slsw" style="display:none">🕒 آخر مزامنة: <strong id="slt">—</strong></div>
+</div>
+
+<!-- Setup -->
+<div class="setup" id="setupPage">
+  <div class="setup-card">
+    <div class="ic">🔗</div>
+    <h2>ابدأ بإعداد مكتبتك</h2>
+    <p>ربط Dropbox يتيح لك البحث في آلاف الصور والفيديوهات بكلمة واحدة</p>
+    <div class="steps">
+      <div class="step"><div class="sn">1</div><div>احصل على <strong>Access Token</strong> من Dropbox Developer Console</div></div>
+      <div class="step"><div class="sn">2</div><div>أضف مسارات مجلداتك مثل <code style="color:var(--acc)">/Photos</code></div></div>
+      <div class="step"><div class="sn">3</div><div>اضغط "مزامنة" وسيُفهرَس كل شيء تلقائياً</div></div>
+    </div>
+    <button class="bsave" onclick="openModal()">⚙️ فتح الإعدادات</button>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div id="mainContent" style="display:none">
+  <div class="search-area">
+    <div class="slabel">ابحث في مكتبتك</div>
+    <div class="srow">
+      <div class="sbox">
+        <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input id="q" type="text" autocomplete="off" spellcheck="false"
+          placeholder="جوال، شاطئ، اجتماع، wedding، logo...">
+      </div>
+      <button class="sbtn" onclick="doSearch()">بحث</button>
+    </div>
+    <div class="filters">
+      <button class="pill on" onclick="setF('all',this)">الكل</button>
+      <button class="pill" onclick="setF('image',this)">🖼️ صور</button>
+      <button class="pill" onclick="setF('video',this)">🎬 فيديوهات</button>
+    </div>
+  </div>
+
+  <div class="rarea">
+    <div class="rmeta" id="meta" style="display:none">
+      <div>
+        <div class="rcount" id="rcount"></div>
+        <div class="trow" id="trow"></div>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div id="stLoad" class="state" style="display:none"><div class="spinner"></div><span style="font-size:13px">جاري البحث...</span></div>
+    <div id="stEmpty" class="state">
+      <div class="state-ic">🔍</div>
+      <h3>ابحث في مكتبتك</h3>
+      <p>ندعم المرادفات — البحث عن "جوال" يجلب نتائج "هاتف، phone، iPhone" أيضاً</p>
+    </div>
+    <div class="lmwrap" id="lmw" style="display:none">
+      <button class="lmbtn" onclick="loadMore()">تحميل المزيد</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="mhdr">
+      <div class="mtitle">⚙️ الإعدادات</div>
+      <button class="mx" onclick="closeModal()">✕</button>
+    </div>
+
+    <!-- رابط الـ API -->
+    <div class="fg">
+      <label class="fl">🌐 رابط الخادم (API URL)</label>
+      <input class="fi" id="fApi" placeholder="http://localhost:8000">
+      <div class="fh">
+        محلياً: <code>http://localhost:8000</code><br>
+        على Railway: <code>https://your-app.railway.app</code><br>
+        على Render: <code>https://your-app.onrender.com</code>
+      </div>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="fg">
+      <label class="fl">🔑 Dropbox Access Token</label>
+      <input type="password" class="fi" id="fTok" placeholder="sl.xxxxx...">
+      <div class="fh">
+        احصل عليه من
+        <a href="https://www.dropbox.com/developers/apps" target="_blank">Dropbox Developers</a>
+        ← أنشئ App ← Permissions: <code>files.content.read</code> + <code>sharing.read</code> ← Generate Token
+      </div>
+    </div>
+
+    <div class="fg">
+      <label class="fl">📁 مجلدات Dropbox</label>
+      <div class="fbox" id="fbox"></div>
+      <div class="addrow">
+        <input class="fi" id="fnew" placeholder="/Photos/مكتبتي"
+          onkeydown="if(event.key==='Enter')addFolder()">
+        <button class="pill" onclick="addFolder()">+ إضافة</button>
+      </div>
+      <div class="fh">المسار الكامل يبدأ بـ / — تقدر تضيف أكثر من مجلد</div>
+    </div>
+
+    <div class="mactions">
+      <button class="bsave" onclick="saveConfig()">💾 حفظ</button>
+      <button class="bout" onclick="triggerSync();closeModal()">🔄 مزامنة الآن</button>
+    </div>
+
+    <div class="sinfo" id="sinfo" style="display:none">
+      <div id="sinfoTxt"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ── رابط الـ API — يُحفظ في localStorage ──────────────────────────────────
+let API = localStorage.getItem('api_url') || 'http://localhost:8000';
+
+let filter = 'all', offset = 0, total = 0, lastQ = '', dbt, folders = [];
+const LIMIT = 60;
+
+/* ── Init ── */
+async function init() {
+  document.getElementById('fApi').value = API;
+  document.getElementById('q').addEventListener('keydown', e => { if(e.key==='Enter') doSearch() });
+  document.getElementById('q').addEventListener('input', () => {
+    clearTimeout(dbt);
+    const v = document.getElementById('q').value.trim();
+    if (v.length >= 2) dbt = setTimeout(doSearch, 420);
+    else if (!v) clearR();
+  });
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal() });
+
+  await loadConfig();
+  await loadStats();
+  setInterval(loadStats, 90000);
+}
+
+/* ── Config ── */
+async function loadConfig() {
+  try {
+    const r = await fetch(`${API}/api/config`);
+    const c = await r.json();
+    if (c.configured) {
+      show('mainContent'); hide('setupPage');
+      folders = c.folders || [];
+      if (c.last_sync) { show('slsw'); document.getElementById('slt').textContent = fmtD(c.last_sync) }
+    } else {
+      show('setupPage'); hide('mainContent');
+    }
+  } catch {
+    show('setupPage'); hide('mainContent');
+    toast('تعذّر الاتصال — تأكد من رابط الخادم في الإعدادات ⚙️', 'err');
+  }
+}
+
+async function saveConfig() {
+  const apiUrl = document.getElementById('fApi').value.trim().replace(/\/$/,'');
+  const token  = document.getElementById('fTok').value.trim();
+
+  if (!apiUrl) { toast('أدخل رابط الخادم', 'err'); return }
+  if (!token)  { toast('أدخل Dropbox Access Token', 'err'); return }
+  if (!folders.length) { toast('أضف مجلداً واحداً على الأقل', 'err'); return }
+
+  // حفظ API URL محلياً في المتصفح
+  API = apiUrl;
+  localStorage.setItem('api_url', apiUrl);
+
+  try {
+    const r = await fetch(`${API}/api/config`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ token, folders })
+    });
+    const d = await r.json();
+    if (r.ok) { toast('✅ تم الحفظ بنجاح', 'ok'); closeModal(); await loadConfig() }
+    else toast(d.detail || 'خطأ في الحفظ', 'err');
+  } catch { toast('تعذّر الاتصال بالخادم', 'err') }
+}
+
+/* ── Stats ── */
+async function loadStats() {
+  try {
+    const r = await fetch(`${API}/api/stats`);
+    const s = await r.json();
+    document.getElementById('si').textContent = (s.images||0).toLocaleString('ar');
+    document.getElementById('sv').textContent = (s.videos||0).toLocaleString('ar');
+    document.getElementById('sf').textContent = (s.folders||0).toLocaleString('ar');
+  } catch {}
+}
+
+/* ── Sync ── */
+async function triggerSync() {
+  setSyncUI('spin','جاري المزامنة...');
+  document.getElementById('syncBtn').disabled = true;
+  try {
+    await fetch(`${API}/api/sync`, {method:'POST'});
+    toast('🔄 بدأت المزامنة — انتظر قليلاً', 'ok');
+    // انتظر وحدّث
+    setTimeout(async () => {
+      setSyncUI('ok','جاهز');
+      document.getElementById('syncBtn').disabled = false;
+      await loadStats();
+      await loadConfig();
+    }, 5000);
+  } catch {
+    setSyncUI('err','خطأ');
+    document.getElementById('syncBtn').disabled = false;
+    toast('تعذّر الاتصال بالخادم', 'err');
+  }
+}
+function setSyncUI(s, t) {
+  const d = document.getElementById('dot');
+  d.className = 'dot' + (s==='spin'?' spin':s==='err'?' err':'');
+  document.getElementById('dtxt').textContent = t;
+}
+
+/* ── Search ── */
+async function doSearch() {
+  const q = document.getElementById('q').value.trim();
+  if (!q) return;
+  lastQ = q; offset = 0;
+  showSt('load'); hide('meta'); hide('lmw');
+  document.getElementById('grid').innerHTML = '';
+  await fetch_results(q, 0, true);
+}
+async function loadMore() {
+  offset += LIMIT;
+  await fetch_results(lastQ, offset, false);
+}
+async function fetch_results(q, off, replace) {
+  try {
+    const tp = filter!=='all' ? `&type=${filter}` : '';
+    const r  = await fetch(`${API}/api/search?q=${encodeURIComponent(q)}&limit=${LIMIT}&offset=${off}${tp}`);
+    const d  = await r.json();
+    total = d.total;
+    hideSt();
+    show('meta');
+    if (replace) {
+      document.getElementById('rcount').innerHTML =
+        `<strong>${d.total.toLocaleString('ar')}</strong> نتيجة لـ "<strong>${q}</strong>"`;
+      const tr = document.getElementById('trow');
+      tr.innerHTML = d.terms_used && d.terms_used.length > 1
+        ? 'شمل البحث: ' + d.terms_used.slice(0,8).map(t=>`<span class="tchip">${t}</span>`).join('')
+        : '';
+    }
+    if (!d.results.length && off===0) {
+      hideSt(); hide('meta');
+      showSt('nf', q); return;
+    }
+    renderCards(d.results, replace);
+    const shown = off + d.results.length;
+    shown < d.total ? show('lmw') : hide('lmw');
+  } catch {
+    hideSt(); toast('خطأ في الاتصال بالخادم', 'err');
+  }
+}
+
+function renderCards(items, replace) {
+  const g = document.getElementById('grid');
+  if (replace) g.innerHTML = '';
+  items.forEach((item, i) => {
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.style.animationDelay = `${Math.min(i,20)*.028}s`;
+    c.onclick = () => item.dropbox_link
+      ? window.open(item.dropbox_link,'_blank')
+      : toast('لا يوجد رابط لهذا الملف','err');
+
+    const ext   = (item.extension||'').replace('.','').toUpperCase();
+    const fname = (item.folder_path||'').split('/').filter(Boolean).pop() || '';
+
+    let top;
+    if (item.file_type==='video')
+      top = `<div class="cph">🎬<span class="vbadge">${ext||'VIDEO'}</span></div>`;
+    else if (item.thumbnail_b64)
+      top = `<img class="cimg" src="${item.thumbnail_b64}" alt="" loading="lazy">`;
+    else
+      top = `<div class="cph">🖼️</div>`;
+
+    c.innerHTML = `${top}
+      <div class="cbody">
+        <div class="ctitle" title="${item.name}">${item.name_clean||item.name}</div>
+        <div class="csub">
+          ${ext?`<span class="ext">${ext}</span>`:''}
+          ${fname?`<span class="cfolder">📁 ${fname}</span>`:''}
+        </div>
+      </div>`;
+    g.appendChild(c);
+  });
+}
+
+function clearR() {
+  document.getElementById('grid').innerHTML='';
+  hide('meta');hide('lmw');showSt('empty');
+}
+function setF(f,btn) {
+  filter=f;
+  document.querySelectorAll('.filters .pill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  if(lastQ) doSearch();
+}
+
+/* ── States ── */
+function showSt(s,q='') {
+  hide('stLoad');
+  document.getElementById('stEmpty').style.display='none';
+  if(s==='load') show('stLoad');
+  else if(s==='empty') {
+    const e=document.getElementById('stEmpty');
+    e.style.display='flex';
+    e.innerHTML=`<div class="state-ic">🔍</div><h3>ابحث في مكتبتك</h3>
+      <p>ندعم المرادفات — البحث عن "جوال" يجلب "هاتف، phone، iPhone" أيضاً</p>`;
+  }
+  else if(s==='nf') {
+    const e=document.getElementById('stEmpty');
+    e.style.display='flex';
+    e.innerHTML=`<div class="state-ic">😕</div><h3>لا توجد نتائج</h3>
+      <p>لم نجد نتائج لـ "${q}"<br>جرّب كلمة مختلفة</p>`;
+  }
+}
+function hideSt(){hide('stLoad');document.getElementById('stEmpty').style.display='none'}
+
+/* ── Modal ── */
+function openModal() {
+  document.getElementById('fApi').value = API;
+  renderFolders();
+  document.getElementById('overlay').classList.add('show');
+  loadSyncInfo();
+}
+function closeModal() { document.getElementById('overlay').classList.remove('show') }
+
+function renderFolders() {
+  const b = document.getElementById('fbox');
+  if (!folders.length) {
+    b.innerHTML='<div style="font-size:12px;color:var(--t2);padding:6px 4px">لا توجد مجلدات</div>';
+    return;
+  }
+  b.innerHTML = folders.map((f,i)=>`
+    <div class="frow"><span>${f}</span>
+    <button class="fdel" onclick="rmF(${i})">✕</button></div>`).join('');
+}
+function addFolder() {
+  let v = document.getElementById('fnew').value.trim();
+  if (!v) return;
+  if (!v.startsWith('/')) v='/'+v;
+  if (!folders.includes(v)) { folders.push(v); renderFolders() }
+  document.getElementById('fnew').value='';
+}
+function rmF(i) { folders.splice(i,1); renderFolders() }
+
+async function loadSyncInfo() {
+  try {
+    const r = await fetch(`${API}/api/sync/status`);
+    const d = await r.json();
+    const b = document.getElementById('sinfo');
+    b.style.display='block';
+    document.getElementById('sinfoTxt').innerHTML = `
+      📦 إجمالي: <strong>${(d.total||0).toLocaleString('ar')}</strong>
+      &nbsp;|&nbsp; 🖼️ <strong>${(d.images||0).toLocaleString('ar')}</strong>
+      &nbsp;|&nbsp; 🎬 <strong>${(d.videos||0).toLocaleString('ar')}</strong><br>
+      🕒 آخر مزامنة: <strong>${d.last_sync ? fmtD(d.last_sync) : 'لم تتم بعد'}</strong>
+      ${d.running ? ' <span style="color:var(--acc)">⟳ مزامنة جارية</span>' : ''}
+      ${d.last_success ? `<br>✅ +${d.last_success.items_added} مضاف، ~${d.last_success.items_updated} محدَّث، -${d.last_success.items_removed} محذوف (${d.last_success.duration_sec}ث)` : ''}
+      ${d.last_error ? `<br><span style="color:var(--acc2)">⚠️ ${d.last_error.message}</span>` : ''}`;
+  } catch {}
+}
+
+/* ── Helpers ── */
+function show(id) { const e=document.getElementById(id); if(e) e.style.display='block' }
+function hide(id) { const e=document.getElementById(id); if(e) e.style.display='none'  }
+function fmtD(s) {
+  try { return new Date(s).toLocaleDateString('ar-SA',
+    {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) }
+  catch { return s }
+}
+function toast(msg, type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast show ${type}`;
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+init();
+</script>
+</body>
+</html>
